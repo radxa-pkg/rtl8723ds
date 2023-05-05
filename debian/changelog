@@ -1,3 +1,9 @@
+rtl8723ds (5.1.1.5+git20230505.f64de6d-1) stable; urgency=medium
+
+  * Remove submodule in previous fix commit
+
+ -- "Radxa Computer Co., Ltd" <dev@radxa.com>  Fri May 5 16:28:37 2023 +0800
+
 rtl8723ds (5.1.1.5+git20230505.5d284c4-1) stable; urgency=medium
 
   * Fix DKMS build
