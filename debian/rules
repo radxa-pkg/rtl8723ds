@@ -8,6 +8,7 @@ include /usr/share/dpkg/architecture.mk
 
 override_dh_install:
 	dh_install -prtl8723ds-dkms src/* usr/src/8723ds-$(DEB_VERSION)/
+	dh_install -prtl8723ds-dkms debian/patches/ usr/src/8723ds-$(DEB_VERSION)/
 
 override_dh_dkms:
 	dh_dkms -V $(DEB_VERSION)
