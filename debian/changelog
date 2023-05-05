@@ -1,0 +1,5 @@
+rtl8723ds (5.1.1.5+git20230505.339d6c4-1) stable; urgency=medium
+
+  * Imported from radxa-pkg/rtl8723ds#339d6c4d89c51db3b0ca9e9772c73d7e48e71ca3
+
+ -- "Radxa Computer Co., Ltd" <dev@radxa.com>  Mon, 10 Apr 2023 21:31:55 +0800

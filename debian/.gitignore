@@ -1,0 +1,7 @@
+/.debhelper
+/debhelper-build-stamp
+/files
+/rtl8723ds-dkms
+/*.debhelper.log
+/*.postrm.debhelper
+/*.substvars
