@@ -1,7 +1,7 @@
-diff --git a/Makefile b/Makefile
-index ddd4561..d430d6e 100644
---- a/Makefile
-+++ b/Makefile
+Index: rtl8723ds/src/Makefile
+===================================================================
+--- rtl8723ds.orig/src/Makefile
++++ rtl8723ds/src/Makefile
 @@ -1791,7 +1791,7 @@ ifeq ($(CONFIG_RTL8723B), y)
  $(MODULE_NAME)-$(CONFIG_MP_INCLUDED)+= core/rtw_bt_mp.o
  endif

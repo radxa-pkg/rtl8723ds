@@ -3,5 +3,5 @@
 /files
 /rtl8723ds-dkms
 /*.debhelper.log
-/*.postrm.debhelper
+/*.debhelper
 /*.substvars
