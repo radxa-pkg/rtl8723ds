@@ -1,0 +1,123 @@
+Index: rtl8723ds/src/Makefile
+===================================================================
+--- rtl8723ds.orig/src/Makefile
++++ rtl8723ds/src/Makefile
+@@ -647,6 +647,7 @@ MODULE_SUB_NAME = 8723ds
+ endif
+ 
+ EXTRA_CFLAGS += -DCONFIG_RTL8723D
++EXTRA_CFLAGS += -DCONFIG_GET_MAC_ADDRESS_FROM_FILE
+ 
+ _HAL_INTFS_FILES += hal/HalPwrSeqCmd.o \
+ 					hal/$(RTL871X)/Hal8723DPwrSeq.o\
+Index: rtl8723ds/src/core/rtw_ieee80211.c
+===================================================================
+--- rtl8723ds.orig/src/core/rtw_ieee80211.c
++++ rtl8723ds/src/core/rtw_ieee80211.c
+@@ -19,7 +19,7 @@
+  ******************************************************************************/
+ #define _IEEE80211_C
+ 
+-#ifdef CONFIG_PLATFORM_INTEL_BYT
++#if defined(CONFIG_PLATFORM_INTEL_BYT) || defined(CONFIG_GET_MAC_ADDRESS_FROM_FILE)
+ 	#include <linux/fs.h>
+ #endif
+ #include <drv_types.h>
+@@ -1295,17 +1295,20 @@ u8 convert_ip_addr(u8 hch, u8 mch, u8 lch)
+ 	return (key_char2num(hch) * 100) + (key_char2num(mch) * 10) + key_char2num(lch);
+ }
+ 
+-#ifdef CONFIG_PLATFORM_INTEL_BYT
++#if defined(CONFIG_PLATFORM_INTEL_BYT) || defined(CONFIG_GET_MAC_ADDRESS_FROM_FILE)
+ #define MAC_ADDRESS_LEN 12
++#define C_MAC_ADDRESS_LEN 13
+ 
+ int rtw_get_mac_addr_intel(unsigned char *buf)
+ {
+ 	int ret = 0;
+ 	int i;
+ 	struct file *fp = NULL;
++#ifdef CONFIG_PLATFORM_INTEL_BYT
+ 	mm_segment_t oldfs;
++#endif
+ 	unsigned char c_mac[MAC_ADDRESS_LEN];
+-	char fname[] = "/config/wifi/mac.txt";
++	char fname[] = "/etc/rtl8723ds_mac.txt";
+ 	int jj, kk;
+ 
+ 	RTW_INFO("%s Enter\n", __FUNCTION__);
+@@ -1322,6 +1325,27 @@ int rtw_get_mac_addr_intel(unsigned char *buf)
+ 
+ 	return 0;
+ }
++
++int rtw_set_mac_addr_intel(unsigned char *buf)
++{
++	int ret = 0;
++	int i;
++	struct file *fp = NULL;
++#ifdef CONFIG_PLATFORM_INTEL_BYT
++	mm_segment_t oldfs;
++#endif
++	unsigned char c_mac[C_MAC_ADDRESS_LEN];
++	char fname[] = "/etc/rtl8723ds_mac.txt";
++
++	snprintf(c_mac, C_MAC_ADDRESS_LEN, "%02x%02x%02x%02x%02x%02x",
++		buf[0], buf[1], buf[2],buf[3], buf[4], buf[5]);
++
++	ret = rtw_store_to_file(fname, c_mac, C_MAC_ADDRESS_LEN);
++	if (ret < C_MAC_ADDRESS_LEN)
++		return -1;
++
++	return 0;
++}
+ #endif /* CONFIG_PLATFORM_INTEL_BYT */
+ 
+ /*
+@@ -1398,7 +1422,7 @@ void rtw_macaddr_cfg(u8 *out, const u8 *hw_mac_addr)
+ 	}
+ 
+ 	/* platform specified */
+-#ifdef CONFIG_PLATFORM_INTEL_BYT
++#if defined(CONFIG_PLATFORM_INTEL_BYT) || defined(CONFIG_GET_MAC_ADDRESS_FROM_FILE)
+ 	if (rtw_get_mac_addr_intel(mac) == 0)
+ 		goto err_chk;
+ #endif
+@@ -1417,6 +1441,10 @@ err_chk:
+ 		mac[0] = 0x00;
+ 		mac[1] = 0xe0;
+ 		mac[2] = 0x4c;
++
++#ifdef CONFIG_GET_MAC_ADDRESS_FROM_FILE
++		rtw_set_mac_addr_intel(mac);
++#endif
+ #else
+ 		RTW_ERR("invalid mac addr:"MAC_FMT", assign default one\n", MAC_ARG(mac));
+ 		mac[0] = 0x00;
+Index: rtl8723ds/src/os_dep/osdep_service.c
+===================================================================
+--- rtl8723ds.orig/src/os_dep/osdep_service.c
++++ rtl8723ds/src/os_dep/osdep_service.c
+@@ -1253,11 +1253,21 @@ static int writeFile(struct file *fp, char *buf, int len)
+ {
+ 	int wlen = 0, sum = 0;
+ 
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 1, 0))
++	if (!(fp->f_mode & FMODE_CAN_WRITE))
++#else
+ 	if (!fp->f_op || !fp->f_op->write)
++#endif
+ 		return -EPERM;
+ 
+ 	while (sum < len) {
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 14, 0))
++		wlen = kernel_write(fp, buf + sum, len - sum, &fp->f_pos);
++#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 1, 0))
++		wlen = __vfs_write(fp, buf + sum, len - sum, &fp->f_pos);
++#else
+ 		wlen = fp->f_op->write(fp, buf + sum, len - sum, &fp->f_pos);
++#endif
+ 		if (wlen > 0)
+ 			sum += wlen;
+ 		else if (0 != wlen)
+
