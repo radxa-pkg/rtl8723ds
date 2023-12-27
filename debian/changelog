@@ -1,3 +1,10 @@
+rtl8723ds (5.1.1.5+git20231227.52e593e-2) stable; urgency=medium
+
+  [ ZHANG Yuntian ]
+  * Fix dkms source install
+
+ -- "Radxa Computer Co., Ltd" <dev@radxa.com>  Wed, 27 Dec 2023 18:07:12 +0800
+
 rtl8723ds (5.1.1.5+git20231227.52e593e-1) stable; urgency=medium
 
   [ Chuang Ma ]
