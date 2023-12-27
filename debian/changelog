@@ -1,3 +1,14 @@
+rtl8723ds (5.1.1.5+git20231227.52e593e-1) stable; urgency=medium
+
+  [ Chuang Ma ]
+  * debian: patches: Add patch to get wifi mac address from file
+
+  [ ZHANG Yuntian ]
+  * Confrom to existing dkms practice
+  * src: sync upstream
+
+ -- "Radxa Computer Co., Ltd" <dev@radxa.com>  Wed, 27 Dec 2023 14:53:34 +0800
+
 rtl8723ds (5.1.1.5+git20231102.47ce045-1) stable; urgency=medium
 
   [ ZHANG Yuntian ]
