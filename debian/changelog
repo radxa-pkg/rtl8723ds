@@ -1,3 +1,10 @@
+rtl8723ds (5.1.1.5+git20231227.52e593e-3) stable; urgency=medium
+
+  [ ZHANG Yuntian ]
+  * Add missing build dependency
+
+ -- "Radxa Computer Co., Ltd" <dev@radxa.com>  Fri, 29 Dec 2023 17:55:08 +0800
+
 rtl8723ds (5.1.1.5+git20231227.52e593e-2) stable; urgency=medium
 
   [ ZHANG Yuntian ]
