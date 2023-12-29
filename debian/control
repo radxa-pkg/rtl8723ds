@@ -13,7 +13,8 @@ Package: rtl8723ds-dkms
 Architecture: all
 Section: misc
 Priority: optional
-Depends: ${misc:Depends},
+Depends: bc,
+         ${misc:Depends},
 Description: dkms sources for Realtek RTL8723DS Wi-Fi driver
  This package provides the dkms source code for Realtek
  RTL8723DS Wi-Fi driver.
